@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import time
 
 # -------------- SETTINGS --------------
-GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/ABC123456/export?format=csv"  # 🔁 Replace with your sheet
+GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQC0K2a2x8G_5CgJALtSE4V9xLcnUz0QSIZLsrm8n0mW8-fz-CRrW0lKyp-LJbjaa3N72TBaoR5rEPr/pub?output=csv"  # 🔁 Replace with your sheet
 REFRESH_INTERVAL = 30  # seconds
 # Background image (blue-green fluid abstract)
 BACKGROUND_IMAGE_URL = "https://static.vecteezy.com/system/resources/previews/006/812/555/non_2x/blue-green-abstract-fluid-shapes-background-vector.jpg"
