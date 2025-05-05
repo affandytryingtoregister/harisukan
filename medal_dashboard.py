@@ -6,7 +6,7 @@ import time
 # -------------- SETTINGS --------------
 GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQC0K2a2x8G_5CgJALtSE4V9xLcnUz0QSIZLsrm8n0mW8-fz-CRrW0lKyp-LJbjaa3N72TBaoR5rEPr/pub?output=csv"  # 🔁 Replace with your sheet link
 REFRESH_INTERVAL = 30  # seconds
-BACKGROUND_IMAGE_URL = "https://drive.google.com/uc?export=view&id=1V51zdzqDXepflyB8kV_sX_ammNd6Z319"
+BACKGROUND_IMAGE_URL = "https://github.com/affandytryingtoregister/harisukan/blob/main/blue-green-abstract-fluid-shapes-background.jpg?raw=true"
 # --------------------------------------
 
 st.set_page_config(page_title="Sports Week Medal Tally", layout="wide")
