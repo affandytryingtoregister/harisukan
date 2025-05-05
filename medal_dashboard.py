@@ -4,34 +4,64 @@ import plotly.graph_objects as go
 import time
 
 # -------------- SETTINGS --------------
-GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQC0K2a2x8G_5CgJALtSE4V9xLcnUz0QSIZLsrm8n0mW8-fz-CRrW0lKyp-LJbjaa3N72TBaoR5rEPr/pub?output=csv"  # 🔁 Replace with your real link
+GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/ABC123456/export?format=csv"  # 🔁 Replace with your sheet
 REFRESH_INTERVAL = 30  # seconds
+# Background image (blue-green fluid abstract)
+BACKGROUND_IMAGE_URL = "https://static.vecteezy.com/system/resources/previews/006/812/555/non_2x/blue-green-abstract-fluid-shapes-background-vector.jpg"
 # --------------------------------------
 
 st.set_page_config(page_title="Sports Week Medal Tally", layout="wide")
 st.title("🏅 Sports Week Live Medal Tally")
 
-st.caption(f"Auto-refreshes every {REFRESH_INTERVAL} seconds to get latest medal data.")
-st.query_params.update(refresh=int(time.time()))  # ✅ Updated to new API
+# 🔹 Inject background and translucent content box
+page_bg_img = f'''
+<style>
+[data-testid="stAppViewContainer"] {{
+    background-image: url("{BACKGROUND_IMAGE_URL}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}}
 
-# Load CSV from Google Sheets
+[data-testid="stHeader"] {{
+    background: rgba(255, 255, 255, 0.5);
+}}
+[data-testid="stSidebar"] {{
+    background: rgba(255, 255, 255, 0.5);
+}}
+
+.main > div {{
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-top: 1rem;
+}}
+</style>
+'''
+st.markdown(page_bg_img, unsafe_allow_html=True)
+
+# Info
+st.caption(f"Auto-refreshes every {REFRESH_INTERVAL} seconds to get latest medal data.")
+st.query_params.update(refresh=int(time.time()))
+
+# Load data
 try:
     df = pd.read_csv(GOOGLE_SHEET_CSV_URL)
     df.columns = df.columns.str.strip()
     df.fillna('', inplace=True)
 
-    # Ensure medal counts are numeric
+    # Ensure numbers are integers
     df['Gold'] = pd.to_numeric(df['Gold'], errors='coerce').fillna(0).astype(int)
     df['Silver'] = pd.to_numeric(df['Silver'], errors='coerce').fillna(0).astype(int)
     df['Bronze'] = pd.to_numeric(df['Bronze'], errors='coerce').fillna(0).astype(int)
-
     df['Total'] = df['Gold'] + df['Silver'] + df['Bronze']
 
-    # Sort for ranking
+    # Sort
     df_sorted = df.sort_values(by=['Gold', 'Silver', 'Bronze'], ascending=False).reset_index(drop=True)
     df_sorted.index += 1
 
-    # Plotly stacked bar chart
+    # Chart
     fig = go.Figure()
     fig.add_trace(go.Bar(
         x=df['Team'], y=df['Gold'], name='Gold', marker_color='gold',
@@ -55,17 +85,17 @@ try:
     )
     st.plotly_chart(fig, use_container_width=True)
 
-    # Display medal ranking table
+    # Ranking table
     st.subheader("📊 Medal Ranking Table")
     st.dataframe(
         df_sorted[["Team", "Gold", "Silver", "Bronze", "Total"]].reset_index().rename(columns={"index": "Rank"}),
         use_container_width=True
     )
 
-    # Refresh timer
+    # Auto-refresh
     time.sleep(REFRESH_INTERVAL)
     st.rerun()
 
 except Exception as e:
     st.error(f"⚠️ Failed to load medal data from Google Sheets: {e}")
-    st.info("Make sure the sheet is published to the web as CSV and follows the correct column format.")
+    st.info("Make sure the sheet is published as CSV and accessible by anyone with the link.")
