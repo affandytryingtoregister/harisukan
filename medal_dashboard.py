@@ -12,7 +12,7 @@ st.set_page_config(page_title="Sports Week Medal Tally", layout="wide")
 st.title("🏅 Sports Week Live Medal Tally")
 
 st.caption(f"Auto-refreshes every {REFRESH_INTERVAL} seconds to get latest medal data.")
-st.experimental_set_query_params(refresh=int(time.time()))
+st.query_params.update(refresh=int(time.time()))  # ✅ Updated to new API
 
 # Load CSV from Google Sheets
 try:
@@ -20,15 +20,18 @@ try:
     df.columns = df.columns.str.strip()
     df.fillna('', inplace=True)
 
+    # Ensure medal counts are numeric
     df['Gold'] = pd.to_numeric(df['Gold'], errors='coerce').fillna(0).astype(int)
     df['Silver'] = pd.to_numeric(df['Silver'], errors='coerce').fillna(0).astype(int)
     df['Bronze'] = pd.to_numeric(df['Bronze'], errors='coerce').fillna(0).astype(int)
+
     df['Total'] = df['Gold'] + df['Silver'] + df['Bronze']
 
+    # Sort for ranking
     df_sorted = df.sort_values(by=['Gold', 'Silver', 'Bronze'], ascending=False).reset_index(drop=True)
     df_sorted.index += 1
 
-    # Plot
+    # Plotly stacked bar chart
     fig = go.Figure()
     fig.add_trace(go.Bar(
         x=df['Team'], y=df['Gold'], name='Gold', marker_color='gold',
@@ -52,13 +55,14 @@ try:
     )
     st.plotly_chart(fig, use_container_width=True)
 
-    # Table
+    # Display medal ranking table
     st.subheader("📊 Medal Ranking Table")
     st.dataframe(
         df_sorted[["Team", "Gold", "Silver", "Bronze", "Total"]].reset_index().rename(columns={"index": "Rank"}),
         use_container_width=True
     )
 
+    # Refresh timer
     time.sleep(REFRESH_INTERVAL)
     st.rerun()
 
