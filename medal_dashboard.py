@@ -17,7 +17,8 @@ st.title("🏅 Sports Week Live Medal Tally")
 page_bg_img = f'''
 <style>
 [data-testid="stAppViewContainer"] {{
-    background-image: url("https://www.vecteezy.com/vector-art/681255-blue-green-abstract-fluid-shapes-background");
+    background-image: url("https://static.vecteezy.com/system/resources/previews/006/812/555/non_2x/blue-green-abstract-fluid-shapes-background-vector.jpg
+");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
